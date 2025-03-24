@@ -1,0 +1,58 @@
+services:
+  main_app:
+    build:
+      context: src
+      dockerfile: dockerfiles/main_app.Dockerfile
+      args: 
+        BUILD_ENV: ${ENVIRONMENT}
+        LOG_LEVEL: ${LOG_LEVEL}
+    command:
+      [
+        "uvicorn",
+        "--host=0.0.0.0",
+        "--port=${BATCH_TS_APP_PORT}",
+        "main_app.main:app",
+      ]
+    hostname: ${BATCH_TS_APP_HOSTNAME}
+    profiles:
+      - ""
+      - all
+      - batch_ts-dev
+    ports:
+      - "${BATCH_TS_APP_PORT}:${BATCH_TS_APP_PORT}"
+
+  ollama:
+    build:
+      context: src
+      dockerfile: dockerfiles/ollama_custom.Dockerfile
+    ports:
+      - 11433:11434
+    volumes:
+      #- ./ollama_entrypoint.sh:/entrypoint.sh # For Linux docker compose
+      - ./ollama_entrypoint_windows.sh:/entrypoint.sh # For Windows docker compose
+      - ./src/models:/root/.ollama/models # Local models directory mounted inside the container; Comment when loading for non-internet access
+    container_name: rdai_ollama
+    pull_policy: always
+    tty: true
+    restart: always
+    entrypoint: ["/usr/bin/bash", "/entrypoint.sh"]
+    deploy:
+      resources: 
+        reservations: 
+          devices: 
+            - driver: nvidia
+              count: 1 
+              capabilities: [gpu]
+
+  streamlit_app:
+    build:
+      context: src
+      dockerfile: dockerfiles/streamlit.Dockerfile  
+    command: ["streamlit", "run", "frontend_app.py"]  
+    ports:
+      - "8501:8501"  
+    volumes:
+      - ./src:/src  
+    environment:
+      - STREAMLIT_PORT=8501  
+    restart: always

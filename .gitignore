@@ -1,0 +1,6 @@
+*.log
+.DS_Store
+/Notebooks
+src/app_base
+src/models
+src/main_app/__pycache__

@@ -35,6 +35,12 @@
 4. Upload demo_excel.xlsx (located in home directory)
 5. Wait for a while and obtain the results in the processed_excel.xlxs (CHECK name)
 
+Security considerations used in main_app.Dockerfile
+1) python:3.10-slim-bookworm is used to reduce attack as they contain fewer packagers
+2) Using non-root user reduces access in case of a vulnerability
+3) --chown=appuser:appuser Limited permissionjs
+4) Removing unecessary files after installation rm -rf /var/lib/apt/lists/*
+5) Using healthcheck
 
 Concepts used:
 1) FastAPI

@@ -32,6 +32,13 @@
 
 2. FAST API docs: http://localhost:8000
 3. Run the application in http://localhost:8501
+4. Upload demo_excel.xlsx (located in home directory)
+5. Wait for a while and obtain the results in the processed_excel.xlxs (CHECK name)
 
-TODO:
-1) Check security in docker compose (PENDING)
+
+Concepts used:
+1) FastAPI
+2) Docker and Docker compose
+3) Ollama + Mistral:7b (GGUF)
+4) Streamlit
+5) Prompt engineering via LangChain Community
